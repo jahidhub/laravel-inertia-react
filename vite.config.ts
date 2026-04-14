@@ -22,4 +22,9 @@ export default defineConfig({
             formVariants: true,
         }),
     ],
+    server: {
+        watch: {
+            usePolling: true,
+        },
+    },
 });
