@@ -1,12 +1,14 @@
-import { Button } from '@/components/ui/button';
-import { Head } from '@inertiajs/react';
+
+import { Head, Link } from '@inertiajs/react';
 import { Search } from 'lucide-react';
+import { Button } from '@/components/ui/button';
+import { Card, CardContent } from '@/components/ui/card';
 import {
     InputGroup,
     InputGroupAddon,
     InputGroupInput,
 } from '@/components/ui/input-group';
-import { Card, CardContent } from '@/components/ui/card';
+
 import {
     Table,
     TableBody,
@@ -22,7 +24,7 @@ export default function Posts() {
             <Head title="Posts" />
 
             <div className="flex h-full flex-1 flex-col gap-4 overflow-x-auto rounded-xl p-4">
-                <div className="rounded-xl border border-gray-200 bg-white p-4 shadow-sm">
+                <div className="rounded-xl border  p-4 shadow-sm">
                     <div className="mb-5 flex items-center justify-between gap-4">
                         <InputGroup className="max-w-md">
                             <InputGroupInput placeholder="Search..." />
@@ -32,17 +34,18 @@ export default function Posts() {
                             </InputGroupAddon>
                         </InputGroup>
 
-                        <Button type="button">Create Post</Button>
+                        <Button>
+                            <Link href="/posts/create">Create Post</Link>
+                        </Button>
                     </div>
 
                     <div className="post-form">
                         <Card>
                             <CardContent>
                                 <Table>
-                                    
                                     <TableHeader>
                                         <TableRow>
-                                            <TableHead className="w-[100px]">
+                                            <TableHead className="w-15">
                                                 No
                                             </TableHead>
                                             <TableHead>Image</TableHead>
@@ -64,10 +67,9 @@ export default function Posts() {
                                             <TableCell>slug</TableCell>
                                             <TableCell>Content</TableCell>
                                             <TableCell className="text-right">
-                                               action
+                                                action
                                             </TableCell>
                                         </TableRow>
-                                        
                                     </TableBody>
                                 </Table>
                             </CardContent>
