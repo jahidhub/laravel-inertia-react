@@ -1,4 +1,6 @@
 import { Button } from '@/components/ui/button';
+import { Card, CardContent } from '@/components/ui/card';
+import { Input } from '@/components/ui/input';
 import { Head, Link } from '@inertiajs/react';
 
 export default function Posts() {
@@ -14,12 +16,28 @@ export default function Posts() {
                         </Button>
                     </div>
 
-                    <div className="post-form">
-
-                        <form action="">
-                            
-                        </form>
-                    </div>
+                    <Card className="post-form">
+                        <CardContent>
+                            <form action="">
+                                <div className='mb-4'>
+                                    <label htmlFor="title">Title</label>
+                                    <Input
+                                        type="text"
+                                        placeholder="title"
+                                        id="title"
+                                    />
+                                </div>
+                                <div className='mb-4'>
+                                    <label htmlFor="title">Title</label>
+                                    <Input
+                                        type="text"
+                                        placeholder="title"
+                                        id="title"
+                                    />
+                                </div>
+                            </form>
+                        </CardContent>
+                    </Card>
                 </div>
             </div>
         </>
