@@ -1,29 +1,25 @@
 import { Button } from '@/components/ui/button';
-import { Input } from '@/components/ui/input';
 import { Head, Link } from '@inertiajs/react';
-import {
-    Table,
-    TableBody,
-    TableCell,
-    TableHead,
-    TableHeader,
-    TableRow,
-} from '@/components/ui/table';
 
 export default function Posts() {
     return (
         <>
-            <Head title="Posts" />
+            <Head title="Create Posts" />
             <div className="flex h-full flex-1 flex-col gap-4 overflow-x-auto rounded-xl p-4">
                 <div>
                     <div className="mb-5 flex items-center justify-between">
-                        <Input placeholder="Enter text" className="w-1/3" />
+                        <div className="text-xl">Create Posts</div>
                         <Button>
-                            <Link href="/posts/create">Create Post</Link>
+                            <Link href="/posts">Go Back</Link>
                         </Button>
                     </div>
 
-                    <div className="post-table"></div>
+                    <div className="post-form">
+
+                        <form action="">
+                            
+                        </form>
+                    </div>
                 </div>
             </div>
         </>
@@ -33,8 +29,8 @@ export default function Posts() {
 Posts.layout = {
     breadcrumbs: [
         {
-            title: 'Posts',
-            href: '/posts',
+            title: 'Create Posts',
+            href: '/posts/create',
         },
     ],
 };
