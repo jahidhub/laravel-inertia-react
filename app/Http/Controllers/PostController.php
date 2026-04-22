@@ -29,7 +29,26 @@ class PostController extends Controller
      */
     public function store(Request $request)
     {
-        dd($request->all());
+        // dd($request->all());
+
+        $request->validate([
+            'title' => ['required', 'string', 'max:255'],
+
+            'slug' => ['required', 'string', 'max:255', 'unique:posts,slug'],
+
+            'content' => ['required', 'string'],
+
+            'category' => ['required'],
+
+            'status' => ['required'],
+
+            'image' => ['nullable', 'image', 'mimes:jpg,jpeg,png,webp', 'max:2048'],
+        ]);
+
+
+
+
+        
     }
 
     /**

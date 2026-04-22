@@ -1,7 +1,9 @@
 import { Head, Link, useForm } from '@inertiajs/react';
 import { Loader2 } from 'lucide-react';
+import InputError from '@/components/input-error';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent } from '@/components/ui/card';
+import { Field, FieldLabel } from '@/components/ui/field';
 import { Input } from '@/components/ui/input';
 import {
     Select,
@@ -12,10 +14,10 @@ import {
     SelectValue,
 } from '@/components/ui/select';
 import { Textarea } from '@/components/ui/textarea';
-import { Field, FieldLabel } from '@/components/ui/field';
+
 
 export default function Posts() {
-    const { data, setData, post, processing } = useForm<{
+    const { data, setData, errors, post, processing } = useForm<{
         title: string;
         slug: string;
         content: string;
@@ -34,6 +36,8 @@ export default function Posts() {
         e.preventDefault();
         post('/posts');
     }
+
+    console.log(errors);
 
     return (
         <>
@@ -65,11 +69,13 @@ export default function Posts() {
                                             id="title"
                                             type="text"
                                             value={data.title}
+                                            aria-invalid={!!errors.title}
                                             onChange={(e) =>
                                                 setData('title', e.target.value)
                                             }
                                             placeholder="Enter post title"
                                         />
+                                        <InputError message={errors.title} />
                                     </div>
 
                                     <div className="space-y-2">
@@ -87,7 +93,9 @@ export default function Posts() {
                                             }
                                             type="text"
                                             placeholder="Enter post slug"
+                                            aria-invalid={!!errors.slug}
                                         />
+                                        <InputError message={errors.slug} />
                                     </div>
                                 </div>
 
@@ -107,6 +115,7 @@ export default function Posts() {
                                         >
                                             <SelectTrigger
                                                 id="category"
+                                                aria-invalid={!!errors.category}
                                                 className="w-full"
                                             >
                                                 <SelectValue placeholder="Select category" />
@@ -122,6 +131,8 @@ export default function Posts() {
                                                 </SelectGroup>
                                             </SelectContent>
                                         </Select>
+
+                                        <InputError message={errors.category} />
                                     </div>
 
                                     <div className="space-y-2">
@@ -140,6 +151,7 @@ export default function Posts() {
                                             <SelectTrigger
                                                 id="status"
                                                 className="w-full"
+                                                aria-invalid={!!errors.status}
                                             >
                                                 <SelectValue placeholder="Select status" />
                                             </SelectTrigger>
@@ -154,6 +166,7 @@ export default function Posts() {
                                                 </SelectGroup>
                                             </SelectContent>
                                         </Select>
+                                        <InputError message={errors.status} />
                                     </div>
                                 </div>
 
@@ -166,6 +179,7 @@ export default function Posts() {
                                     </label>
                                     <Textarea
                                         id="content"
+                                        aria-invalid={!!errors.content}
                                         value={data.content}
                                         onChange={(e) =>
                                             setData('content', e.target.value)
@@ -173,6 +187,7 @@ export default function Posts() {
                                         rows={6}
                                         placeholder="Write your post content here..."
                                     />
+                                    <InputError message={errors.content} />
                                 </div>
 
                                 <div className="space-y-2">
@@ -182,6 +197,7 @@ export default function Posts() {
                                         </FieldLabel>
                                         <Input
                                             id="image"
+                                            aria-invalid={!!errors.image}
                                             type="file"
                                             onChange={(e) => {
                                                 const files =
@@ -192,6 +208,7 @@ export default function Posts() {
                                                 }
                                             }}
                                         />
+                                        <InputError message={errors.image} />
                                     </Field>
                                 </div>
 
