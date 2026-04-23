@@ -37,7 +37,7 @@ export default function Posts() {
         post('/posts');
     }
 
-    console.log(errors);
+
 
     return (
         <>
