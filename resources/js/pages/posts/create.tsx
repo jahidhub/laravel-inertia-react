@@ -15,7 +15,6 @@ import {
 } from '@/components/ui/select';
 import { Textarea } from '@/components/ui/textarea';
 
-
 export default function Posts() {
     const { data, setData, errors, post, processing } = useForm<{
         title: string;
@@ -36,8 +35,6 @@ export default function Posts() {
         e.preventDefault();
         post('/posts');
     }
-
-
 
     return (
         <>
@@ -98,7 +95,25 @@ export default function Posts() {
                                         <InputError message={errors.slug} />
                                     </div>
                                 </div>
-
+                                <div className="space-y-2">
+                                    <label
+                                        htmlFor="content"
+                                        className="text-sm leading-none font-medium"
+                                    >
+                                        Content
+                                    </label>
+                                    <Textarea
+                                        id="content"
+                                        aria-invalid={!!errors.content}
+                                        value={data.content}
+                                        onChange={(e) =>
+                                            setData('content', e.target.value)
+                                        }
+                                        rows={6}
+                                        placeholder="Write your post content here..."
+                                    />
+                                    <InputError message={errors.content} />
+                                </div>
                                 <div className="grid gap-6 md:grid-cols-2">
                                     <div className="space-y-2">
                                         <label
@@ -171,26 +186,6 @@ export default function Posts() {
                                 </div>
 
                                 <div className="space-y-2">
-                                    <label
-                                        htmlFor="content"
-                                        className="text-sm leading-none font-medium"
-                                    >
-                                        Content
-                                    </label>
-                                    <Textarea
-                                        id="content"
-                                        aria-invalid={!!errors.content}
-                                        value={data.content}
-                                        onChange={(e) =>
-                                            setData('content', e.target.value)
-                                        }
-                                        rows={6}
-                                        placeholder="Write your post content here..."
-                                    />
-                                    <InputError message={errors.content} />
-                                </div>
-
-                                <div className="space-y-2">
                                     <Field>
                                         <FieldLabel htmlFor="image">
                                             Image
@@ -210,6 +205,15 @@ export default function Posts() {
                                         />
                                         <InputError message={errors.image} />
                                     </Field>
+                                    {data.image && (
+                                        <img
+                                            src={URL.createObjectURL(
+                                                data.image,
+                                            )}
+                                            alt="Image Preview"
+                                            className="mt-8 h-32 w-32 rounded border object-cover"
+                                        />
+                                    )}
                                 </div>
 
                                 <div className="flex items-center gap-3 pt-2">
