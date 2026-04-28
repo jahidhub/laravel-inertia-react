@@ -30,12 +30,11 @@ class PostController extends Controller
      */
     public function store(Request $request)
     {
-        dd($request->all());
 
         $request->validate([
             'title' => ['required', 'string', 'max:255'],
 
-            'slug' => ['required', 'string', 'max:255', 'unique:posts,slug'],
+            'slug' => ['required', 'string', 'max:255', 'unique:posts,post_slug'],
 
             'content' => ['required', 'string'],
 
@@ -43,21 +42,18 @@ class PostController extends Controller
 
             'status' => ['required'],
 
-            'image' => ['nullable', 'image', 'mimes:jpg,jpeg,png,webp', 'max:2048'],
+            'image' => ['nullable', 'image', 'mimes:jpg,jpeg,png,webp', 'max:5000'],
         ]);
 
-
-
-
-
-
         $image = null;
+
         if ($request->hasFile('image')) {
             $file = $request->file('image');
-            $image = $file->store('posts', 'public');
+            $image = $file->store( 'posts', 'public');
         }
 
         Post::create([
+            'user_id' => 1,
             'post_title' => $request->title,
             'post_slug' => $request->slug ?? Str::slug($request->title),
             'post_content' => $request->content,
@@ -67,8 +63,6 @@ class PostController extends Controller
         ]);
 
         return redirect()->route('posts.index')->with('success', 'Post created successfully');
-
-
     }
 
     /**

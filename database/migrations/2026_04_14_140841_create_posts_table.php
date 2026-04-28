@@ -19,7 +19,7 @@ return new class extends Migration {
             $table->text('post_content');
             $table->string('post_category');
             $table->string('post_image')->nullable();
-            $table->boolean('post_status')->default(true);
+            $table->enum('post_status', ['Active', 'Inactive'])->default('Active');
             $table->timestamps();
         });
     }
