@@ -53,12 +53,12 @@ class PostController extends Controller
         }
 
         Post::create([
-            'user_id' => 1,
-            'post_title' => $request->title,
-            'post_slug' => Str::slug($request->slug) ?? Str::slug($request->title),
-            'post_content' => $request->content,
-            'post_category' => $request->category,
-            'post_status' => $request->status,
+            'user_id' => auth()->user()->id,
+            'post_title' => $request->input('title'),
+            'post_slug' => $request->slug ? Str::slug($request->slug) : Str::slug($request->title),
+            'post_content' => $request->input('content'),
+            'post_category' => $request->input('category'),
+            'post_status' => $request->input('status'),
             'post_image' => $image,
         ]);
 

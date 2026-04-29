@@ -1,6 +1,6 @@
-
-import { Head, Link } from '@inertiajs/react';
+import { Head, Link, usePage } from '@inertiajs/react';
 import { Search } from 'lucide-react';
+import { useEffect } from 'react';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent } from '@/components/ui/card';
 import {
@@ -17,14 +17,23 @@ import {
     TableHeader,
     TableRow,
 } from '@/components/ui/table';
+import { toast } from 'sonner';
 
 export default function Posts() {
+    const { flash } = usePage<{ flash: { success?: string } }>().props;
+
+    useEffect(() => {
+        if (flash.success) {
+            toast.success(flash.success);
+        }
+    }, [flash.success]);
+
     return (
         <>
             <Head title="Posts" />
 
             <div className="flex h-full flex-1 flex-col gap-4 overflow-x-auto rounded-xl p-4">
-                <div className="rounded-xl border  p-4 shadow-sm">
+                <div className="rounded-xl border p-4 shadow-sm">
                     <div className="mb-5 flex items-center justify-between gap-4">
                         <InputGroup className="max-w-md">
                             <InputGroupInput placeholder="Search..." />
