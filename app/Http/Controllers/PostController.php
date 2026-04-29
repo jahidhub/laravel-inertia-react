@@ -49,20 +49,20 @@ class PostController extends Controller
 
         if ($request->hasFile('image')) {
             $file = $request->file('image');
-            $image = $file->store( 'posts', 'public');
+            $image = $file->store('posts', 'public');
         }
 
         Post::create([
             'user_id' => 1,
             'post_title' => $request->title,
-            'post_slug' => $request->slug ?? Str::slug($request->title),
+            'post_slug' => Str::slug($request->slug) ?? Str::slug($request->title),
             'post_content' => $request->content,
             'post_category' => $request->category,
             'post_status' => $request->status,
             'post_image' => $image,
         ]);
 
-        return redirect()->route('posts.index')->with('success', 'Post created successfully');
+        return to_route('posts.index')->with('success', 'Post created successfully');
     }
 
     /**

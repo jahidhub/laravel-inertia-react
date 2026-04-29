@@ -1,5 +1,7 @@
-import { Head, Link, useForm } from '@inertiajs/react';
+
+import { Head, Link, useForm, usePage } from '@inertiajs/react';
 import { Loader2 } from 'lucide-react';
+import { useEffect } from 'react';
 import InputError from '@/components/input-error';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent } from '@/components/ui/card';
@@ -16,6 +18,15 @@ import {
 import { Textarea } from '@/components/ui/textarea';
 
 export default function Posts() {
+    const { flash } = usePage<{ flash: { success?: string; error?: string } }>()
+        .props;
+
+    useEffect(() => {
+        if (flash.success) {
+            console.log(flash.success);
+        }
+    }, [flash.success]);
+
     const { data, setData, errors, post, processing } = useForm<{
         title: string;
         slug: string;
