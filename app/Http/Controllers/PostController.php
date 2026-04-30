@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\Post;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 use Inertia\Inertia;
 use Illuminate\Support\Str;
 
@@ -12,9 +13,20 @@ class PostController extends Controller
     /**
      * Display a listing of the resource.
      */
-    public function index()
+    public function index(Request $request)
     {
-        return Inertia::render('posts/index');
+
+        $query = Auth::user()->posts()->latest();
+
+        if($request->has('search') && $request->search !== null ){
+            $query->whereAny(['post_title', 'post_content'], 'like', '%'.$request->search.'%');
+        }
+
+        $posts = $query->get();
+
+        return Inertia::render('posts/index', [
+            'posts' => $posts
+        ]);
     }
 
     /**
@@ -53,7 +65,7 @@ class PostController extends Controller
         }
 
         Post::create([
-            'user_id' => auth()->user()->id,
+            'user_id' => Auth::user()->id,
             'post_title' => $request->input('title'),
             'post_slug' => $request->slug ? Str::slug($request->slug) : Str::slug($request->title),
             'post_content' => $request->input('content'),
