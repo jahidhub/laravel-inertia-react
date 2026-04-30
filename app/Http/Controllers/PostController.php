@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Models\Post;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Storage;
 use Inertia\Inertia;
 use Illuminate\Support\Str;
 
@@ -23,7 +24,7 @@ class PostController extends Controller
         }
 
         $posts = $query->paginate(2)->withQueryString();
-
+        // dd($posts->toArray());
         return Inertia::render('posts/index', [
             'posts' => $posts->toArray(),
             'filters' => $request->only(['search']),
@@ -91,7 +92,11 @@ class PostController extends Controller
      */
     public function edit(Post $post)
     {
-        //
+
+        return inertia::render('posts/edit', [
+            'postData' => $post->toArray(),
+            'id' => $post->id
+        ]);
     }
 
     /**
@@ -99,7 +104,45 @@ class PostController extends Controller
      */
     public function update(Request $request, Post $post)
     {
-        //
+
+        $request->validate([
+            'title' => ['required', 'string', 'max:255'],
+
+            'slug' => 'required|string|max:255|unique:posts,post_slug,'. $post->id,
+
+            'content' => ['required', 'string'],
+
+            'category' => ['required'],
+
+            'status' => ['required'],
+
+            'image' => ['nullable', 'image', 'mimes:jpg,jpeg,png,webp', 'max:5000'],
+        ]);
+
+        $slug = $request->slug ? Str::slug($request->slug) : Str::slug($request->title);
+
+        $updateData = [
+            'post_title' => $request->input('title'),
+            'post_slug' => $slug,
+            'post_content' => $request->input('content'),
+            'post_category' => $request->input('category'),
+            'post_status' => $request->input('status'),
+        ];
+
+        if ($request->hasFile('image')) {
+            $file = $request->file('image');
+            $image = $file->store('posts', 'public');
+            
+            if ($post->post_image && Storage::disk('public')->exists($post->post_image)) {
+                Storage::disk('public')->delete($post->post_image);
+            }
+            
+            $updateData['post_image'] = $image;
+        }
+
+        $post->fill($updateData)->save();
+
+        return to_route('posts.index')->with('success', 'Post updated successfully');
     }
 
     /**
@@ -107,6 +150,11 @@ class PostController extends Controller
      */
     public function destroy(Post $post)
     {
-        //
+        
+        if ($post->post_image && Storage::disk('public')->exists($post->post_image)) {
+            Storage::disk('public')->delete($post->post_image);
+        }
+        $post->deleteQuietly();
+        return to_route('posts.index')->with('success', 'Post deleted successfully');
     }
 }

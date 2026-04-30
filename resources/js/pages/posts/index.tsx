@@ -20,6 +20,7 @@ import {
 import { toast } from 'sonner';
 import { Badge } from '@/components/ui/badge';
 import debounce from 'lodash/debounce';
+import InertiaPagination from '@/components/ui/InertiaPagination';
 
 interface PostType {
     id: number;
@@ -130,7 +131,10 @@ export default function Posts({ posts }: { posts: PaginatedPosts }) {
                                         {posts.data?.map((post, index) => (
                                             <TableRow key={post.id}>
                                                 <TableCell className="font-medium">
-                                                    {(posts.current_page - 1) * posts.per_page + index + 1}
+                                                    {(posts.current_page - 1) *
+                                                        posts.per_page +
+                                                        index +
+                                                        1}
                                                 </TableCell>
                                                 <TableCell>
                                                     <img
@@ -174,17 +178,21 @@ export default function Posts({ posts }: { posts: PaginatedPosts }) {
                                                 <TableCell className="space-x-2 text-right">
                                                     <Button variant="outline">
                                                         <Link
-                                                            href={`/posts/${post.id}`}
+                                                            href={`/posts/${post.id}/edit`}
+                                                            preserveScroll
+                                                            preserveState
                                                         >
                                                             Edit
                                                         </Link>
                                                     </Button>
                                                     <Button
                                                         variant="outline"
-                                                        className="text-red-500 hover:border-2 hover:border-red-500 hover:bg-red-500 hover:text-red-500"
+                                                        className="text-red-500 hover:bg-red-500 hover:text-white"
                                                     >
                                                         <Link
+                                                            method="delete"
                                                             href={`/posts/${post.id}`}
+                                                            onBefore={() => confirm('Are you sure you want to delete this post?')}
                                                         >
                                                             Delete
                                                         </Link>
@@ -195,33 +203,18 @@ export default function Posts({ posts }: { posts: PaginatedPosts }) {
                                     </TableBody>
                                 </Table>
 
-                                {posts.links && posts.links.length > 3 && (
-                                    <div className="mt-6 flex flex-col items-center justify-between gap-4 sm:flex-row">
-                                        <div className="text-sm text-gray-500">
-                                            Showing {posts.from || 0} to {posts.to || 0} of {posts.total} results
-                                        </div>
-                                        <div className="flex flex-wrap items-center gap-1">
-                                            {posts.links.map((link, index) => (
-                                                <Link
-                                                    key={index}
-                                                    href={link.url || '#'}
-                                                    className={`rounded-md border px-3 py-1 text-sm ${
-                                                        link.active
-                                                            ? 'bg-primary text-primary-foreground'
-                                                            : 'hover:bg-muted'
-                                                    } ${
-                                                        !link.url
-                                                            ? 'pointer-events-none opacity-50'
-                                                            : ''
-                                                    }`}
-                                                    dangerouslySetInnerHTML={{ __html: link.label }}
-                                                    preserveScroll
-                                                    preserveState
-                                                />
-                                            ))}
-                                        </div>
+                                {posts.data.length === 0 && (
+                                    <div className="flex items-center justify-center">
+                                        <p className="py-20 text-muted-foreground">
+                                            No posts found
+                                        </p>
                                     </div>
                                 )}
+
+                                <InertiaPagination
+                                    pagination={posts}
+                                    className="py-5"
+                                />
                             </CardContent>
                         </Card>
                     </div>

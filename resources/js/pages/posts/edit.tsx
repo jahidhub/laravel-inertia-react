@@ -17,9 +17,7 @@ import {
 } from '@/components/ui/select';
 import { Textarea } from '@/components/ui/textarea';
 
-export default function Posts() {
-   
-
+export default function Posts({ postData }: { postData: any }) {
     const { data, setData, errors, post, processing } = useForm<{
         title: string;
         slug: string;
@@ -27,26 +25,28 @@ export default function Posts() {
         category: string;
         status: string;
         image: File | null;
+        _method: string;
     }>({
-        title: '',
-        slug: '',
-        content: '',
-        category: '',
-        status: '',
+        title: postData.post_title,
+        slug: postData.post_slug,
+        content: postData.post_content,
+        category: postData.post_category,
+        status: postData.post_status,
         image: null,
+        _method: 'put',
     });
     function handleSubmitForm(e: React.FormEvent<HTMLFormElement>) {
         e.preventDefault();
-        post('/posts');
+        post(`/posts/${postData.id}`, { forceFormData: true });
     }
 
     return (
         <>
-            <Head title="Create Posts" />
+            <Head title="Edit Posts" />
             <div className="flex h-full flex-1 flex-col gap-4 overflow-x-auto rounded-xl p-4">
                 <div>
                     <div className="mb-5 flex items-center justify-between">
-                        <div className="text-xl">Create Posts</div>
+                        <div className="text-xl">Edit Posts</div>
                         <Button>
                             <Link href="/posts">Go Back</Link>
                         </Button>
@@ -209,7 +209,7 @@ export default function Posts() {
                                         />
                                         <InputError message={errors.image} />
                                     </Field>
-                                    {data.image && (
+                                    {data.image ? (
                                         <img
                                             src={URL.createObjectURL(
                                                 data.image,
@@ -217,7 +217,13 @@ export default function Posts() {
                                             alt="Image Preview"
                                             className="mt-8 h-32 w-32 rounded border object-cover"
                                         />
-                                    )}
+                                    ) : postData.post_image ? (
+                                        <img
+                                            src={`/storage/${postData.post_image}`}
+                                            alt="Current Image"
+                                            className="mt-8 h-32 w-32 rounded border object-cover"
+                                        />
+                                    ) : null}
                                 </div>
 
                                 <div className="flex items-center gap-3 pt-2">
@@ -233,7 +239,7 @@ export default function Posts() {
                                     </Button>
 
                                     <Button type="button" variant="outline" asChild>
-                                        <Link href='/posts'>Cancel  </Link>
+                                        <Link href='/posts'>Cancel</Link>
                                     </Button>
                                 </div>
                             </form>
@@ -248,8 +254,10 @@ export default function Posts() {
 Posts.layout = {
     breadcrumbs: [
         {
-            title: 'Create Posts',
-            href: '/posts/create',
+            title: 'Edit',
+            href: 'posts',
         },
+       
+
     ],
 };
