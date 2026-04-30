@@ -21,7 +21,7 @@ import { toast } from 'sonner';
 import { Badge } from '@/components/ui/badge';
 import debounce from 'lodash/debounce';
 
-interface postType {
+interface PostType {
     id: number;
     post_title: string;
     post_slug: string;
@@ -33,7 +33,21 @@ interface postType {
     updated_at: string;
 }
 
-export default function Posts({ posts }: { posts: postType[] }) {
+interface PaginatedPosts {
+    data: PostType[];
+    links: {
+        url: string | null;
+        label: string;
+        active: boolean;
+    }[];
+    from: number;
+    to: number;
+    total: number;
+    current_page: number;
+    per_page: number;
+}
+
+export default function Posts({ posts }: { posts: PaginatedPosts }) {
     const { flash } = usePage<{ flash: { success?: string } }>().props;
 
     useEffect(() => {
@@ -42,19 +56,30 @@ export default function Posts({ posts }: { posts: postType[] }) {
         }
     }, [flash.success]);
 
+    const { filters = {} } = usePage<{ filters: { search?: string } }>().props;
+
     const handleSearch = useRef(
         debounce((query: string) => {
             router.get(
                 '/posts',
                 { search: query },
-                { preserveState: true, replace: true },
+                {
+                    preserveState: true,
+                    replace: true,
+                    preserveScroll: true,
+                },
             );
         }, 500),
     ).current;
 
+    useEffect(() => {
+        return () => {
+            handleSearch.cancel();
+        };
+    }, []);
+
     function onSearchChange(e: React.ChangeEvent<HTMLInputElement>) {
-        const query = e.target.value;
-        handleSearch(query);
+        handleSearch(e.target.value);
     }
 
     return (
@@ -68,6 +93,7 @@ export default function Posts({ posts }: { posts: postType[] }) {
                             <InputGroupInput
                                 placeholder="Search..."
                                 onChange={onSearchChange}
+                                defaultValue={filters.search}
                             />
 
                             <InputGroupAddon>
@@ -101,10 +127,10 @@ export default function Posts({ posts }: { posts: postType[] }) {
                                         </TableRow>
                                     </TableHeader>
                                     <TableBody>
-                                        {posts.map((post, index) => (
-                                            <TableRow>
+                                        {posts.data?.map((post, index) => (
+                                            <TableRow key={post.id}>
                                                 <TableCell className="font-medium">
-                                                    {index + 1}
+                                                    {(posts.current_page - 1) * posts.per_page + index + 1}
                                                 </TableCell>
                                                 <TableCell>
                                                     <img
@@ -168,6 +194,34 @@ export default function Posts({ posts }: { posts: postType[] }) {
                                         ))}
                                     </TableBody>
                                 </Table>
+
+                                {posts.links && posts.links.length > 3 && (
+                                    <div className="mt-6 flex flex-col items-center justify-between gap-4 sm:flex-row">
+                                        <div className="text-sm text-gray-500">
+                                            Showing {posts.from || 0} to {posts.to || 0} of {posts.total} results
+                                        </div>
+                                        <div className="flex flex-wrap items-center gap-1">
+                                            {posts.links.map((link, index) => (
+                                                <Link
+                                                    key={index}
+                                                    href={link.url || '#'}
+                                                    className={`rounded-md border px-3 py-1 text-sm ${
+                                                        link.active
+                                                            ? 'bg-primary text-primary-foreground'
+                                                            : 'hover:bg-muted'
+                                                    } ${
+                                                        !link.url
+                                                            ? 'pointer-events-none opacity-50'
+                                                            : ''
+                                                    }`}
+                                                    dangerouslySetInnerHTML={{ __html: link.label }}
+                                                    preserveScroll
+                                                    preserveState
+                                                />
+                                            ))}
+                                        </div>
+                                    </div>
+                                )}
                             </CardContent>
                         </Card>
                     </div>

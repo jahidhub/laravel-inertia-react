@@ -18,14 +18,15 @@ class PostController extends Controller
 
         $query = Auth::user()->posts()->latest();
 
-        if($request->has('search') && $request->search !== null ){
-            $query->whereAny(['post_title', 'post_content'], 'like', '%'.$request->search.'%');
+        if ($request->has('search') && $request->search !== null) {
+            $query->whereAny(['post_title', 'post_content'], 'like', '%' . $request->search . '%');
         }
 
-        $posts = $query->get();
+        $posts = $query->paginate(2)->withQueryString();
 
         return Inertia::render('posts/index', [
-            'posts' => $posts
+            'posts' => $posts->toArray(),
+            'filters' => $request->only(['search']),
         ]);
     }
 
