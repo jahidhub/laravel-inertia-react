@@ -24,7 +24,6 @@ class PostController extends Controller
         }
 
         $posts = $query->paginate(2)->withQueryString();
-        // dd($posts->toArray());
         return Inertia::render('posts/index', [
             'posts' => $posts->toArray(),
             'filters' => $request->only(['search']),
@@ -84,7 +83,9 @@ class PostController extends Controller
      */
     public function show(Post $post)
     {
-        //
+        return Inertia::render('posts/show', [
+            'post' => $post
+        ]);
     }
 
     /**

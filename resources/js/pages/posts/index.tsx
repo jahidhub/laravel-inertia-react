@@ -178,6 +178,15 @@ export default function Posts({ posts }: { posts: PaginatedPosts }) {
                                                 <TableCell className="space-x-2 text-right">
                                                     <Button variant="outline">
                                                         <Link
+                                                            href={`/posts/${post.id}`}
+                                                            preserveScroll
+                                                            preserveState
+                                                        >
+                                                            View
+                                                        </Link>
+                                                    </Button>
+                                                    <Button variant="outline">
+                                                        <Link
                                                             href={`/posts/${post.id}/edit`}
                                                             preserveScroll
                                                             preserveState
